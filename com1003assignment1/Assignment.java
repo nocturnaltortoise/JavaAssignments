@@ -45,7 +45,7 @@ public class Assignment{
 		int mainCurrencyEnd= currencyString.indexOf(" and");
 		int subCurrencyStart = currencyString.lastIndexOf(" ") + 1;
         
-       	//Uses the positions of the currency names to extract the currency names from the string.
+       		//Uses the positions of the currency names to extract the currency names from the string.
 		final String FOREIGN_MAIN_CURRENCY = currencyString.substring(mainCurrencyStart, mainCurrencyEnd);
 		final String FOREIGN_SUB_CURRENCY = currencyString.substring(subCurrencyStart);
         
@@ -70,7 +70,7 @@ public class Assignment{
 		screen.println("The VAT on " + TOTAL_PRICE + " is ");
 		screen.println(ukMainAmount + " pounds and " + ukSubAmount + " pence in the UK.");
 		screen.println(foreignMainAmount + " " + FOREIGN_MAIN_CURRENCY + " and " 
-						+ foreignSubAmount + " " + FOREIGN_SUB_CURRENCY + " in " + FOREIGN_COUNTRY + ".");
+				+ foreignSubAmount + " " + FOREIGN_SUB_CURRENCY + " in " + FOREIGN_COUNTRY + ".");
 		
 	
 	}
