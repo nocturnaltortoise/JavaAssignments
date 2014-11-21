@@ -11,39 +11,43 @@ public class Picture{
         //if it's between 4 and 5 it's one shade of green
         //if it's between 6 and 7 it's a different shade of green
        
-    
-    private EasyGraphics window = new EasyGraphics(SCREEN_SIZE,SCREEN_SIZE);
-    
-   
+    private static final int SCREEN_SIZE = 600;
+    private static EasyGraphics window = new EasyGraphics(SCREEN_SIZE,SCREEN_SIZE);
+    private static final int SKETCH_SCREEN_SIZE = 200;
+    private static EasyGraphics sketchWindow = new EasyGraphics(SKETCH_SCREEN_SIZE, SKETCH_SCREEN_SIZE);
     
     public static void main(String[] args){
-            	final int PIXEL_SIZE = 3;
-	    	final int SCREEN_SIZE = 600;
-		final int actualImageSize = actualImageSize;
-		int[] digitArray = new int[40000];
+            final int PIXEL_SIZE = 3;
+	    	
+            final int ACTUAL_IMAGE_SIZE = SCREEN_SIZE / PIXEL_SIZE;
+            int[] digitArray = new int[40000];
 
-            	EasyReader textInput = new EasyReader("picture.txt");
-            	String digits = textInput.readString();
+            EasyReader textInput = new EasyReader("picture.txt");
+            String digits = textInput.readString();
            
-            	for(int i = 0; i < 40000; i++){
+            for(int i = 0; i < 40000; i++){
                
-                	digitArray[i] = Integer.parseInt(digits.substring(i, i+1));
-	        
-			//finds the current row, by dividing the current digit by the size of the screen so that any digit from 0-599 is on row 0, 600-1199 is on row 1, etc.
-			//adjusts for larger pixel size by dividing screen size by that - "actual" size of the picture is 200x200, just scaled up because of 3x3 pixels        
-               		int y = i / (actualImageSize);
+                digitArray[i] = Integer.parseInt(digits.substring(i, i+1));
+    	        
+    			//finds the current row, by dividing the current digit by the size of the screen so that any digit from 0-599 is on row 0, 600-1199 is on row 1, etc.
+    			//adjusts for larger pixel size by dividing screen size by that - "actual" size of the picture is 200x200, just scaled up because of 3x3 pixels        
+                int y = i / (ACTUAL_IMAGE_SIZE);
 			
-			//pixels need to be drawn in rows on top of one another. As we go down the image, the array index gets larger, but the x position must stay the same, so
-			//here the x position is adjusted to make everything line up.
-                	int x = i - ((actualImageSize) * y);
+    			//pixels need to be drawn in rows on top of one another. As we go down the image, the array index gets larger, but the x position must stay the same, so
+    			//here the x position is adjusted to make everything line up.
+                int x = i - ((ACTUAL_IMAGE_SIZE) * y);
 			
-			changeColour(digitArray[i]);
-			//renders the pixel, adjusting for pixel size and flipping the image to deal with EasyGraphics' bottom left coordinate system
-			window.fillRectangle(x * PIXEL_SIZE, SCREEN_SIZE  - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
-                	
+                changeColour(digitArray[i]);
+    			//renders the pixel, adjusting for pixel size and flipping the image to deal with EasyGraphics' bottom left coordinate system
+    			window.fillRectangle(x * PIXEL_SIZE, SCREEN_SIZE  - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
+
+                //int sketchY = i / SKETCH_SCREEN_SIZE;
+                //int sketchX = i - (SKETCH_SCREEN_SIZE * y);
+                //if(digitArray[i] != digitArray[i+1] || digitArray[i] != digitArray[i-1] || digitArray[i] != digitArray[i * (y + 1)] || digitArray[i] != digitArray[i * (y+1)]){
+                    //sketchWindow.plot(sketchX, sketchY);
+                //}	
                
-            	}
-        
+            }
     }
 
     private static void changeColour(int pixelNum){
