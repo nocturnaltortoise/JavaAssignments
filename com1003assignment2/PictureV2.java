@@ -9,15 +9,13 @@ public class PictureV2{
 	private static final int SKETCH_SCREEN_SIZE = 200;
 	private static final int BLOCK_SIZE = 3;
 	private static EasyGraphics mainWindow = new EasyGraphics(SCREEN_SIZE, SCREEN_SIZE);
-	private static int[] digitArray = new int[40000];
-	private static int[][] imageArray = new int[200][200];
-	private static Colour[][] colourArray = new Colour[200][200];
 	private static EasyGraphics sketchWindow = new EasyGraphics(SKETCH_SCREEN_SIZE, SKETCH_SCREEN_SIZE);
 
 	public static void main(String[] args){
 
 		EasyReader fileInput = new EasyReader("picture.txt");
 		String input = fileInput.readString();
+		int[] digitArray = new int[40000];
 
 		for(int i = 0; i < input.length(); i++){
 
@@ -25,20 +23,41 @@ public class PictureV2{
 
 		}
 
+		int[][] imageArray = new int[200][200];
+		Colour[][] colourArray = new Colour[200][200];
+
 		for(int y = 0; y < 200; y++){
 
 			for(int x = 0; x < 200; x++){
 				imageArray[x][y] = digitArray[x + (y*200)];
 				colourArray[x][y] = checkColour(imageArray[x][y]);
-				toRGB(colourArray[x][y]);
-				if(x != 199 && y != 199 && x != 0 && y != 0){
-					if(colourArray[x][y] != colourArray[x+1][y] | colourArray[x][y] != colourArray[x-1][y] | colourArray[x][y] != colourArray[x][y+1] | colourArray[x][y] != colourArray[x][y-1]){
-						sketchWindow.plot(x,SKETCH_SCREEN_SIZE - y);
-					}
+			
+				setRGB(colourArray[x][y]);
+				mainWindow.fillRectangle(x*BLOCK_SIZE,SCREEN_SIZE - (y * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
+				mainWindow.drawRectangle(x*BLOCK_SIZE,SCREEN_SIZE - (y*BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+			}	
+
+		}
+
+		for(int y = 1; y < 199; y++){
+
+			for(int x = 1; x < 199; x++){
+				
+				if(colourArray[x][y] != colourArray[x][y-1]){
+					sketchWindow.plot(x,SKETCH_SCREEN_SIZE - y);
+				}
+				if(colourArray[x][y] != colourArray[x][y+1]){
+					sketchWindow.plot(x,SKETCH_SCREEN_SIZE - y);
+				}
+				if(colourArray[x][y] != colourArray[x-1][y]){
+					sketchWindow.plot(x,SKETCH_SCREEN_SIZE - y);
+				}
+				if(colourArray[x][y] != colourArray[x+1][y]){
+					sketchWindow.plot(x, SKETCH_SCREEN_SIZE - y);
 				}
 				
-				mainWindow.fillRectangle(x*BLOCK_SIZE,SCREEN_SIZE - (y * BLOCK_SIZE),BLOCK_SIZE,BLOCK_SIZE);
-			}	
+				
+			}
 
 		}
 
@@ -47,7 +66,7 @@ public class PictureV2{
 
 	}
 
-	private static void toRGB(Colour colour){
+	private static void setRGB(Colour colour){
 
 		switch(colour){
 			case BLUE:
