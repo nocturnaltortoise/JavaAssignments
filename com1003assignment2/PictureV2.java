@@ -14,18 +14,17 @@ public class PictureV2{
 		String input = fileInput.readString();
 
 		final int IMAGE_SIZE = (int)Math.sqrt(input.length());
-		final int PIXEL_SIZE = 3;
-		final int SCREEN_SIZE = IMAGE_SIZE * PIXEL_SIZE;
+		final int SCREEN_SIZE = 600;
 		final int SKETCH_SCREEN_SIZE = 200;
 		
-		renderColourImage(input, colourArray, SCREEN_SIZE, PIXEL_SIZE, IMAGE_SIZE);
+		renderColourImage(input, colourArray, SCREEN_SIZE, IMAGE_SIZE);
 		renderSketch(colourArray, SKETCH_SCREEN_SIZE, IMAGE_SIZE);
 		
 	}
 
-	private static void renderColourImage(String input, Colour[][] colourArray, final int SCREEN_SIZE, final int PIXEL_SIZE, final int IMAGE_SIZE){
+	private static void renderColourImage(String input, Colour[][] colourArray, final int SCREEN_SIZE, final int IMAGE_SIZE){
 		
-		
+		final int PIXEL_SIZE = 3;
 		EasyGraphics mainWindow = new EasyGraphics(SCREEN_SIZE, SCREEN_SIZE);
 
 		//counter that increments up to the size of the data making the image (40,000 digits in this case)
