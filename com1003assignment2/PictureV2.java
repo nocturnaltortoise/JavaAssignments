@@ -4,30 +4,56 @@ public class PictureV2{
 
 	public enum Colour{BLUE, GREEN, DARK_GREEN, BROWN}
 	private static Colour colour;
-
-	private static final int PIXEL_SIZE = 3;
-	//actual size of the image (i.e. 200x200 in this case)
-	private static final int IMAGE_SIZE = 200;
-	//screen size that the image is to be displayed at (scaled up based on pixel size)
-	private static final int SCREEN_SIZE = IMAGE_SIZE * PIXEL_SIZE;
-	private static final int SKETCH_SCREEN_SIZE = 200;
 	
-	private static EasyGraphics mainWindow = new EasyGraphics(SCREEN_SIZE, SCREEN_SIZE);
-	private static EasyGraphics sketchWindow = new EasyGraphics(SKETCH_SCREEN_SIZE, SKETCH_SCREEN_SIZE);
-
 	public static void main(String[] args){
-
+		
 		//array of enums to store the colours of all the pixels
-		Colour[][] colourArray = new Colour[IMAGE_SIZE][IMAGE_SIZE];
+		Colour[][] colourArray = new Colour[200][200];
+
 		EasyReader fileInput = new EasyReader("picture.txt");
 		String input = fileInput.readString();
 
-		renderImage(input, colourArray);
-		renderSketch(colourArray);
+		final int IMAGE_SIZE = (int)Math.sqrt(input.length());
+		final int PIXEL_SIZE = 3;
+		final int SCREEN_SIZE = IMAGE_SIZE * PIXEL_SIZE;
+		final int SKETCH_SCREEN_SIZE = 200;
+		
+		renderColourImage(input, colourArray, SCREEN_SIZE, PIXEL_SIZE, IMAGE_SIZE);
+		renderSketch(colourArray, SKETCH_SCREEN_SIZE, IMAGE_SIZE);
+		
+	}
+
+	private static void renderColourImage(String input, Colour[][] colourArray, final int SCREEN_SIZE, final int PIXEL_SIZE, final int IMAGE_SIZE){
+		
+		
+		EasyGraphics mainWindow = new EasyGraphics(SCREEN_SIZE, SCREEN_SIZE);
+
+		//counter that increments up to the size of the data making the image (40,000 digits in this case)
+		int digitNumber = 0;
+
+		for(int y = 0; y < IMAGE_SIZE; y++){
+
+			for(int x = 0; x < IMAGE_SIZE; x++){
+
+				if(digitNumber < (IMAGE_SIZE * IMAGE_SIZE) - 1){
+					digitNumber++;
+				}
+				
+				colourArray[x][y] = checkColour(Integer.parseInt(input.substring(digitNumber, digitNumber+1)));
+				
+				//sets the colour for drawing based on the enum value for that pixel
+				mainWindow.setColor(getRGB(colourArray[x][y])[0], getRGB(colourArray[x][y])[1], getRGB(colourArray[x][y])[2]);
+				mainWindow.drawRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
+				mainWindow.fillRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
+
+			}	
+		}
 
 	}
 
-	private static void renderSketch(Colour[][] colourArray){
+	private static void renderSketch(Colour[][] colourArray, final int SKETCH_SCREEN_SIZE, final int IMAGE_SIZE){
+
+		EasyGraphics sketchWindow = new EasyGraphics(SKETCH_SCREEN_SIZE, SKETCH_SCREEN_SIZE);
 
 		/* nested for loop to plot points where colours change between pixels
 		 * starts at 1 and ends at IMAGE_SIZE - 1 so it doesn't either go outside the range of the array
@@ -56,49 +82,39 @@ public class PictureV2{
 
 	}
 
-	private static void renderImage(String input, Colour[][] colourArray){
 
-		//counter that increments up to the size of the data making the image (40,000 digits in this case)
-		int digitNumber = 0;
 
-		for(int y = 0; y < IMAGE_SIZE; y++){
+	private static int[] getRGB(Colour colour){
 
-			for(int x = 0; x < IMAGE_SIZE; x++){
-				digitNumber++;
-
-				if(digitNumber == IMAGE_SIZE * IMAGE_SIZE){
-					break;
-				}else{
-					colourArray[x][y] = checkColour(Integer.parseInt(input.substring(digitNumber, digitNumber+1)));
-				}
-				//sets the colour for drawing based on the enum value for that pixel
-				setRGB(colourArray[x][y]);
-				mainWindow.drawRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
-				mainWindow.fillRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
-
-			}	
-		}
-
-	}
-
-	private static void setRGB(Colour colour){
-
+		int[] rgbValues = new int[3];
 		switch(colour){
 			case BLUE:
-				mainWindow.setColor(0,0,200);
+				rgbValues[0] = 0;
+				rgbValues[1] = 0;
+				rgbValues[2] = 200;
 				break;
 			case GREEN:
-				mainWindow.setColor(0,200,0);
+				rgbValues[0] = 0;
+				rgbValues[1] = 200;
+				rgbValues[2] = 0;
 				break;
 			case DARK_GREEN:
-				mainWindow.setColor(0,180,0);
+				rgbValues[0] = 0;
+				rgbValues[1] = 180;
+				rgbValues[2] = 0;
 				break;
 			case BROWN:
-				mainWindow.setColor(150,100,90);
+				rgbValues[0] = 150;
+				rgbValues[1] = 100;
+				rgbValues[2] = 90;
 				break;
 			default:
-				mainWindow.setColor(0,0,0);
-		}		
+				rgbValues[0] = 0;
+				rgbValues[1] = 0;
+				rgbValues[2] = 0;
+		}
+
+		return rgbValues;		
 
 	}
 
