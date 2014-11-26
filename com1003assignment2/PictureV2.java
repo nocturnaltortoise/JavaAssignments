@@ -10,11 +10,15 @@ public class PictureV2{
 		//array of enums to store the colours of all the pixels
 		Colour[][] colourArray = new Colour[200][200];
 
+		//file initally read into a string so each digit can be turned into a set of colour values.
 		EasyReader fileInput = new EasyReader("picture.txt");
 		String input = fileInput.readString();
 
+		//image is a square of 40,000 pixels - i.e. side length 200 (or sqrt(40,000)).
 		final int IMAGE_SIZE = (int)Math.sqrt(input.length());
+		//screen size is 600, because each block is 3 pixels on screen
 		final int SCREEN_SIZE = 600;
+		//sketch screen size just needs to be smaller so the colour image is still viewable.
 		final int SKETCH_SCREEN_SIZE = 200;
 		
 		renderColourImage(input, colourArray, SCREEN_SIZE, IMAGE_SIZE);
@@ -24,7 +28,7 @@ public class PictureV2{
 
 	private static void renderColourImage(String input, Colour[][] colourArray, final int SCREEN_SIZE, final int IMAGE_SIZE){
 		
-		final int PIXEL_SIZE = 3;
+		final int BLOCK_SIZE = 3;
 		EasyGraphics mainWindow = new EasyGraphics(SCREEN_SIZE, SCREEN_SIZE);
 
 		//counter that increments up to the size of the data making the image (40,000 digits in this case)
@@ -33,17 +37,16 @@ public class PictureV2{
 		for(int y = 0; y < IMAGE_SIZE; y++){
 
 			for(int x = 0; x < IMAGE_SIZE; x++){
-
-				if(digitNumber < (IMAGE_SIZE * IMAGE_SIZE) - 1){
-					digitNumber++;
-				}
 				
 				colourArray[x][y] = checkColour(Integer.parseInt(input.substring(digitNumber, digitNumber+1)));
 				
 				//sets the colour for drawing based on the enum value for that pixel
 				mainWindow.setColor(getRGB(colourArray[x][y])[0], getRGB(colourArray[x][y])[1], getRGB(colourArray[x][y])[2]);
-				mainWindow.drawRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
-				mainWindow.fillRectangle(x * PIXEL_SIZE, SCREEN_SIZE - (y * PIXEL_SIZE), PIXEL_SIZE, PIXEL_SIZE);
+				//each rectangle is scaled up by the block size, with the y coordinate flipped so the picture is the right orientation
+				mainWindow.drawRectangle(x * BLOCK_SIZE, SCREEN_SIZE - (y * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+				mainWindow.fillRectangle(x * BLOCK_SIZE, SCREEN_SIZE - (y * BLOCK_SIZE), BLOCK_SIZE, BLOCK_SIZE);
+				
+				digitNumber++;
 
 			}	
 		}
@@ -85,6 +88,8 @@ public class PictureV2{
 
 	private static int[] getRGB(Colour colour){
 
+		//assigns red, green and blue integer values to an array
+		//depending on the colour the method is fed as a parameter.
 		int[] rgbValues = new int[3];
 		switch(colour){
 			case BLUE:
@@ -106,11 +111,6 @@ public class PictureV2{
 				rgbValues[0] = 150;
 				rgbValues[1] = 100;
 				rgbValues[2] = 90;
-				break;
-			default:
-				rgbValues[0] = 0;
-				rgbValues[1] = 0;
-				rgbValues[2] = 0;
 		}
 
 		return rgbValues;		
@@ -119,6 +119,8 @@ public class PictureV2{
 
 
 	private static Colour checkColour(int digit){
+
+			//turns each integer digit in the text file into an enum value. 
 
 			if(digit >= 0 && digit <= 3){
 				return colour.BLUE;
@@ -129,9 +131,8 @@ public class PictureV2{
             if(digit >= 6 && digit <= 7){
                 return colour.DARK_GREEN;
             }else{
-                return colour.BROWN;
+            	return colour.BROWN;
             }
-
 	}
 
 }
