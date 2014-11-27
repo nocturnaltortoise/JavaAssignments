@@ -92,8 +92,9 @@ public class Picture{
 
 	private static int[] getRGB(Colour colour){
 
-		//assigns red, green and blue integer values to an array
-		//depending on the colour the method is fed as a parameter.
+		/*assigns red, green and blue integer values to an array
+		*depending on the colour the method is fed as a parameter.
+		*/
 		int[] rgbValues = new int[3];
 		switch(colour){
 			case BLUE:
